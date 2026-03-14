@@ -1,0 +1,6 @@
+{
+    "cmake.environment": {
+        "DOTNET_CLI_UI_LANGUAGE": "en-US",
+        "VSLANG": "1033"
+    }
+}

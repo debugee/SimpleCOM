@@ -1,0 +1,45 @@
+@echo off
+REM COM 组件注册脚本
+echo Registering MyCOM components...
+
+REM ============================================================================
+REM 配置标记：是否需要注册 SimpleComPS.dll
+REM 设置为 1 表示注册，0 表示跳过
+REM ============================================================================
+set REGISTER_PROXYSTUB=@REGISTER_PROXYSTUB@
+
+REM 获取脚本目录
+set "SCRIPT_DIR=%~dp0"
+
+REM 注册主 COM 组件
+echo Registering SimpleCOM.dll...
+regsvr32 /s "%SCRIPT_DIR%SimpleCOM.dll"
+if %errorlevel% neq 0 (
+    echo ERROR: Failed to register SimpleCOM.dll
+    echo Make sure to run this script as Administrator
+    pause
+    exit /b 1
+)
+
+REM 条件性注册代理存根
+if %REGISTER_PROXYSTUB%==1 (
+    echo Registering SimpleComPS.dll...
+    
+    REM 检查文件是否存在
+    if exist "%SCRIPT_DIR%SimpleComPS.dll" (
+        regsvr32 /s "%SCRIPT_DIR%SimpleComPS.dll"
+        if %errorlevel% neq 0 (
+            echo ERROR: Failed to register SimpleComPS.dll
+            echo Make sure to run this script as Administrator
+            pause
+            exit /b 1
+        )
+        echo SimpleComPS.dll registered successfully
+    ) else (
+        echo WARNING: SimpleComPS.dll not found - skipping proxy/stub registration
+        echo This is normal if proxy/stub was merged into main DLL
+    )
+) else (
+    echo SKIPPED: SimpleComPS.dll registration disabled
+    echo Proxy/stub functionality is merged into SimpleCOM.dll
+)

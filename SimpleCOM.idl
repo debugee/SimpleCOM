@@ -1,0 +1,52 @@
+import "unknwn.idl";
+import "oaidl.idl";
+
+[
+    object,
+    uuid(a1b2c3d4-e5f6-7890-abcd-ef1234567890),
+    dual,
+    oleautomation,
+    pointer_default(unique),
+]
+interface ICalculator : IDispatch
+{
+    [id(1)] HRESULT Add([in] long a, [in] long b, [out, retval] long* result);
+    [id(2)] HRESULT Subtract([in] long a, [in] long b, [out, retval] long* result);
+    [id(3)] HRESULT Multiply([in] long a, [in] long b, [out, retval] long* result);
+    [id(4)] HRESULT Divide([in] long a, [in] long b, [out, retval] long* result);
+};
+
+[
+    object,
+    uuid(b2c3d4e5-f6a7-8901-bcde-f12345678901),
+    dual,
+    oleautomation,
+    pointer_default(unique),
+]
+interface IStringProcessor : IDispatch
+{
+    [id(101)] HRESULT GetLength([in] BSTR input, [out, retval] long* length);
+    [id(102)] HRESULT ToUpper([in] BSTR input, [out, retval] BSTR* output);
+    [id(103)] HRESULT ToLower([in] BSTR input, [out, retval] BSTR* output);
+    [id(104)] HRESULT Reverse([in] BSTR input, [out, retval] BSTR* output);
+};
+
+[
+    uuid(c3d4e5f6-a7b8-9012-cdef-123456789011),
+    version(1.0),
+    helpstring("Dual Interface COM Component Library")
+]
+library DualInterfaceCOMLib
+{
+    importlib("stdole2.tlb");
+
+    [
+        uuid(c3d4e5f6-a7b8-9012-cdef-123456789012),
+        helpstring("Dual Interface Component Class")
+    ]
+    coclass DualInterfaceComponent
+    {
+        [default] interface ICalculator;
+        interface IStringProcessor;
+    };
+};

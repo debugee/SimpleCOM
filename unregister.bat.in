@@ -1,0 +1,43 @@
+@echo off
+REM COM 组件卸载脚本
+echo UnRegistering MyCOM components...
+
+REM ============================================================================
+REM 配置标记：是否需要卸载 SimpleComPS.dll
+REM 设置为 1 表示卸载，0 表示跳过
+REM ============================================================================
+set REGISTER_PROXYSTUB=@REGISTER_PROXYSTUB@
+
+REM 获取脚本目录
+set "SCRIPT_DIR=%~dp0"
+
+REM 卸载主 COM 组件
+echo UnRegistering SimpleCOM.dll...
+regsvr32 /u /s "%SCRIPT_DIR%SimpleCOM.dll"
+if %errorlevel% neq 0 (
+    echo ERROR: Failed to unregister SimpleCOM.dll
+    echo Make sure to run this script as Administrator
+    pause
+    exit /b 1
+)
+
+REM 条件性卸载代理存根
+if %REGISTER_PROXYSTUB%==1 (
+    echo UnRegistering SimpleComPS.dll...
+    
+    REM 检查文件是否存在
+    if exist "%SCRIPT_DIR%SimpleComPS.dll" (
+        regsvr32 /u /s "%SCRIPT_DIR%SimpleComPS.dll"
+        if %errorlevel% neq 0 (
+            echo ERROR: Failed to unregister SimpleComPS.dll
+            echo Make sure to run this script as Administrator
+            pause
+            exit /b 1
+        )
+        echo SimpleComPS.dll unregistered successfully
+    ) else (
+        echo This is normal if proxy/stub was merged into main DLL
+    )
+) else (
+    echo Proxy/stub functionality is merged into SimpleCOM.dll
+)
