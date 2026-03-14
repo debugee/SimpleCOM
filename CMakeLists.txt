@@ -126,7 +126,7 @@ string(TIMESTAMP COPYRIGHT_YEAR "%Y")
 
 configure_file(SimpleCOM.rc.in ${CMAKE_CURRENT_BINARY_DIR}/SimpleCOM.rc @ONLY)
 
-option(_MERGE_PROXYSTUB "Merge proxy/stub into main DLL" OFF)
+option(_MERGE_PROXYSTUB "Merge proxy/stub into main DLL" ON)
 
 add_library(SimpleCOM SHARED SimpleCOM.cpp dllmain.cpp SimpleCOM.def
     ${IDL_OUTPUT_HDR}
